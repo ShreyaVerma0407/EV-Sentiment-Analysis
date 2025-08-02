@@ -5,7 +5,7 @@ from nltk.corpus import stopwords
 nltk.download('stopwords')
 
 # Load the dataset
-df = pd.read_csv('ev_comments_test.csv')
+df = pd.read_csv('filename.csv')
 
 # Step 1: Remove rows with missing values in the 'comment' column (optional based on your dataset)
 df = df.dropna(subset=['comment'])
@@ -44,7 +44,7 @@ def preprocess_text(text):
 df['comment'] = df['comment'].apply(preprocess_text)
 
 # Step 3: Save the preprocessed dataset back to the same file
-df.to_csv('ev_comments_test.csv', index=False)
+df.to_csv('filename.csv', index=False)
 
 # Step 4: Print the number of entries left after preprocessing
 print(f"Number of entries left after preprocessing: {len(df)}")
