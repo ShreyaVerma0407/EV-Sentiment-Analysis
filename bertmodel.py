@@ -11,7 +11,7 @@ from torch.optim.lr_scheduler import CosineAnnealingLR
 from sklearn.metrics import classification_report, accuracy_score
 
 
-df = pd.read_csv('new_ev_dataset_with_emotion.csv')
+df = pd.read_csv('Data/Datasets/ev_ytcomments.csv')
 X = df['comment'].astype(str).tolist()        # ✅ comment text
 y = df['sentiment']                           # ✅ sentiment label
 label_encoder = LabelEncoder()
