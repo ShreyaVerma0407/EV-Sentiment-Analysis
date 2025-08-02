@@ -1,0 +1,35 @@
+Epoch 1/10, Train Loss: 0.4680, Train Accuracy: 0.8177
+Validation Loss: 0.2801, Validation Accuracy: 0.9020
+Epoch 2/10, Train Loss: 0.2492, Train Accuracy: 0.9145
+Validation Loss: 0.2567, Validation Accuracy: 0.9140
+Epoch 3/10, Train Loss: 0.1749, Train Accuracy: 0.9419
+Validation Loss: 0.2125, Validation Accuracy: 0.9313
+Epoch 4/10, Train Loss: 0.1278, Train Accuracy: 0.9581
+Validation Loss: 0.2032, Validation Accuracy: 0.9327
+Epoch 5/10, Train Loss: 0.0940, Train Accuracy: 0.9687
+Validation Loss: 0.2368, Validation Accuracy: 0.9310
+Epoch 6/10, Train Loss: 0.0696, Train Accuracy: 0.9768
+Validation Loss: 0.2317, Validation Accuracy: 0.9363
+Epoch 7/10, Train Loss: 0.0556, Train Accuracy: 0.9815
+Validation Loss: 0.2343, Validation Accuracy: 0.9397
+Epoch 8/10, Train Loss: 0.0417, Train Accuracy: 0.9854
+Validation Loss: 0.2654, Validation Accuracy: 0.9437
+Epoch 9/10, Train Loss: 0.0340, Train Accuracy: 0.9877
+Validation Loss: 0.2734, Validation Accuracy: 0.9393
+Epoch 10/10, Train Loss: 0.0287, Train Accuracy: 0.9905
+Validation Loss: 0.2770, Validation Accuracy: 0.9393
+Test Loss: 0.2058, Test Accuracy: 0.9527
+              precision    recall  f1-score   support
+
+           0       0.92      0.92      0.92       548
+           1       0.96      0.96      0.96      1237
+           2       0.96      0.96      0.96      1215
+
+    accuracy                           0.95      3000
+   macro avg       0.95      0.95      0.95      3000
+weighted avg       0.95      0.95      0.95      3000
+
+Confusion Matrix:
+ [[ 503   19   26]
+ [  22 1189   26]
+ [  24   25 1166]]
