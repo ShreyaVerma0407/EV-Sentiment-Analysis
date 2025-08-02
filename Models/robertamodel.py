@@ -3,28 +3,38 @@ import numpy as np
 import torch
 from torch import nn
 from torch.utils.data import DataLoader, Dataset
+from transformers import RobertaTokenizer, RobertaModel
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import LabelEncoder
 from sklearn.metrics import classification_report, confusion_matrix
 from torch.optim.lr_scheduler import CosineAnnealingLR
 
 # Load and process data
+<<<<<<< HEAD
 df = pd.read_csv('Data/Datasets/ev_ytcomments.csv')
+=======
+df = pd.read_csv('new_ev_dataset_with_emotion.csv')
+>>>>>>> 7cd6f39 (Local updates before pulling)
 
-# Check for missing values and handle them
-df['comment'] = df['comment'].fillna('')  # Replace NaN values with empty string
+# Preprocessing: Handle missing values and convert all text to strings
+df['comment'] = df['comment'].fillna('')  # Replace missing comments with empty strings
+df['comment'] = df['comment'].astype(str)  # Ensure all comments are strings
 
-# Ensure that all comments are strings
-df['comment'] = df['comment'].astype(str)
-
-# Preprocessing: Tokenization and padding for BiLSTM
+# Tokenizer for RoBERTa
+tokenizer = RobertaTokenizer.from_pretrained('roberta-base')
 max_len = 256  # Maximum length of tokenized input
 
-# Use the correct column name for text data
-X = df['comment'].tolist()  # Use 'comment' column for text data
-y = df['sentiment'].values  # Sentiment labels
 
-# Encode sentiments if they are not numerical
+# Tokenization function
+def encode_text(texts):
+    return tokenizer(texts, padding=True, truncation=True, max_length=max_len, return_tensors="pt")
+
+
+# Encode the text and labels
+X = df['comment'].tolist()  # Use 'comment' for text data
+y = df['sentiment'].values  # Use 'sentiment' for labels
+
+# Encode sentiments (if they are not numerical)
 label_encoder = LabelEncoder()
 y = label_encoder.fit_transform(y)
 
@@ -33,91 +43,62 @@ X_train, X_temp, y_train, y_temp = train_test_split(X, y, test_size=0.2, random_
 X_val, X_test, y_val, y_test = train_test_split(X_temp, y_temp, test_size=0.5, random_state=42)
 
 
-# Tokenization (assuming it's simple space-based tokenization for BiLSTM)
-def tokenize_text(texts):
-    return [text.split() for text in texts]  # Tokenize based on spaces (or use any other method)
-
-
 # Dataset class for handling data
 class EVCarDataset(Dataset):
-    def _init_(self, texts, labels, max_len):
+    def _init_(self, texts, labels):
         self.texts = texts
         self.labels = labels
-        self.max_len = max_len
-        self.tokenized_texts = tokenize_text(texts)
-        self.vocab = self.build_vocab(self.tokenized_texts)
-
-    def build_vocab(self, tokenized_texts):
-        vocab = {}
-        index = 0
-        for text in tokenized_texts:
-            for word in text:
-                if word not in vocab:
-                    vocab[word] = index
-                    index += 1
-        return vocab
-
-    def encode_text(self, text):
-        return [self.vocab.get(word, 0) for word in text][:self.max_len]  # Word index for each text
+        self.encodings = encode_text(texts)
 
     def _len_(self):
         return len(self.texts)
 
     def _getitem_(self, idx):
-        text = self.tokenized_texts[idx]
-        encoded_text = self.encode_text(text)
-        # Padding the encoded text
-        encoded_text = encoded_text + [0] * (self.max_len - len(encoded_text))
-
         return {
-            'input_ids': torch.tensor(encoded_text, dtype=torch.long),
+            'input_ids': self.encodings['input_ids'][idx],
+            'attention_mask': self.encodings['attention_mask'][idx],
             'labels': torch.tensor(self.labels[idx], dtype=torch.long)
         }
 
 
-train_dataset = EVCarDataset(X_train, y_train, max_len)
-val_dataset = EVCarDataset(X_val, y_val, max_len)
-test_dataset = EVCarDataset(X_test, y_test, max_len)
+# Creating datasets
+train_dataset = EVCarDataset(X_train, y_train)
+val_dataset = EVCarDataset(X_val, y_val)
+test_dataset = EVCarDataset(X_test, y_test)
 
 train_dataloader = DataLoader(train_dataset, batch_size=16, shuffle=True)
 val_dataloader = DataLoader(val_dataset, batch_size=16)
 test_dataloader = DataLoader(test_dataset, batch_size=16)
 
 
-# Full BiLSTM Model
-class FullBiLSTMModel(nn.Module):
-    def _init_(self, vocab_size, embed_dim=100, hidden_dim=256, num_labels=3):
-        super(FullBiLSTMModel, self)._init_()
+# Simplified RoBERTa Model (No BiLSTM or Attention)
+class SimpleRoBERTaModel(nn.Module):
+    def _init_(self, num_labels=3):
+        super(SimpleRoBERTaModel, self)._init_()
 
-        # Embedding layer
-        self.embedding = nn.Embedding(vocab_size, embed_dim)
-
-        # BiLSTM Layer (two layers of BiLSTM)
-        self.lstm = nn.LSTM(embed_dim, hidden_dim, num_layers=2, batch_first=True, bidirectional=True)
+        # RoBERTa model
+        self.roberta = RobertaModel.from_pretrained('roberta-base')  # Use roberta-base
 
         # Fully connected layer for output
-        self.fc = nn.Linear(hidden_dim * 2, num_labels)  # BiLSTM is bidirectional (hidden_dim * 2)
+        self.fc = nn.Linear(self.roberta.config.hidden_size, num_labels)
 
         # Dropout to prevent overfitting
         self.dropout = nn.Dropout(0.2)
 
-    def forward(self, input_ids):
-        # Embedding layer
-        embedded = self.embedding(input_ids)
-
-        # BiLSTM Layer
-        lstm_out, _ = self.lstm(embedded)
+    def forward(self, input_ids, attention_mask):
+        roberta_output = self.roberta(input_ids, attention_mask=attention_mask)
+        hidden_states = roberta_output.last_hidden_state
 
         # Apply dropout for regularization
-        lstm_out = self.dropout(lstm_out)
+        hidden_states = self.dropout(hidden_states)
 
-        # Use the last hidden state for classification
-        output = self.fc(lstm_out[:, -1, :])  # Using the last token's hidden state for classification
+        # Get the final output (using the [CLS] token)
+        output = self.fc(hidden_states[:, 0, :])  # Using the first token (CLS token) for classification
         return output
 
 
 # Initialize the model
-model = FullBiLSTMModel(vocab_size=len(train_dataset.vocab), num_labels=len(label_encoder.classes_))
+model = SimpleRoBERTaModel(num_labels=len(label_encoder.classes_))
 
 # Use GPU if available
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
@@ -125,7 +106,7 @@ model.to(device)
 
 # Loss and optimizer
 criterion = nn.CrossEntropyLoss()
-optimizer = torch.optim.Adam(model.parameters(), lr=1e-3)
+optimizer = torch.optim.AdamW(model.parameters(), lr=1e-5)
 
 # Learning Rate Scheduler (CosineAnnealingLR)
 scheduler = CosineAnnealingLR(optimizer, T_max=10)
@@ -145,10 +126,11 @@ def train(model, train_dataloader, val_dataloader, test_dataloader, criterion, o
             optimizer.zero_grad()
 
             input_ids = batch['input_ids'].to(device)
+            attention_mask = batch['attention_mask'].to(device)
             labels = batch['labels'].to(device)
 
             # Forward pass
-            outputs = model(input_ids)
+            outputs = model(input_ids, attention_mask)
             loss = criterion(outputs, labels)
 
             # Backward pass
@@ -172,10 +154,11 @@ def train(model, train_dataloader, val_dataloader, test_dataloader, criterion, o
         total_val_predictions = 0
         for batch in val_dataloader:
             input_ids = batch['input_ids'].to(device)
+            attention_mask = batch['attention_mask'].to(device)
             labels = batch['labels'].to(device)
 
             with torch.no_grad():
-                outputs = model(input_ids)
+                outputs = model(input_ids, attention_mask)
 
             loss = criterion(outputs, labels)
             val_loss += loss.item()
@@ -191,11 +174,6 @@ def train(model, train_dataloader, val_dataloader, test_dataloader, criterion, o
         if val_accuracy > best_val_accuracy:
             best_val_accuracy = val_accuracy
             torch.save(model.state_dict(), "best_model.pth")
-
-        # Check if model achieved target accuracy
-        if val_accuracy > 0.90:
-            print("Achieved target accuracy!")
-            break
 
         # Step the scheduler
         scheduler.step()
@@ -216,9 +194,10 @@ def evaluate_model(model, test_dataloader):
     with torch.no_grad():
         for batch in test_dataloader:
             input_ids = batch['input_ids'].to(device)
+            attention_mask = batch['attention_mask'].to(device)
             labels = batch['labels'].to(device)
 
-            outputs = model(input_ids)
+            outputs = model(input_ids, attention_mask)
             _, preds = torch.max(outputs, dim=1)
 
             loss = criterion(outputs, labels)
@@ -236,5 +215,5 @@ def evaluate_model(model, test_dataloader):
     print("Confusion Matrix:\n", confusion_matrix(all_labels, all_preds))
 
 
-# Start training
+# Start training (run all epochs)
 train(model, train_dataloader, val_dataloader, test_dataloader, criterion, optimizer, scheduler, num_epochs=10)
