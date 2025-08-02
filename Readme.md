@@ -113,7 +113,7 @@ def fetch_reddit_comments(subreddit_name):
 - **Train Models:** Use scripts in `Models/` or notebooks in `Notebooks/` for training/evaluation.
 - **Visualize Results:** Generate plots via:
    ```bash
-   python Visualisations/visualisations.py
+   python Visualisations/yt_visualisations.py
    ```
 - **Review Outputs:** All results and visualizations are stored in `Output/`.
 
