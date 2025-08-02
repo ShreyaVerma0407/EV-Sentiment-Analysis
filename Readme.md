@@ -29,6 +29,27 @@ This document describes the architecture and role of each model used in the proj
 - Layers: RoBERTa encoder → Dropout → FC (on [CLS] token)
 - Tokenization: Hugging Face RoBERTa tokenizer
 - Dataset: YouTube comments (extended with emotions)
+- 
+# 🔀 Hybrid Model Documentation
+
+The **Hybrid Model** in this project combines the strengths of **transformers (like BERT/RoBERTa)** and **recurrent neural networks (BiLSTM)** to improve text classification performance, especially on complex or noisy data.
+
+---
+
+## 🧠 What is the Hybrid Model?
+
+The hybrid model fuses features from both:
+- **Transformer-based encoders** (e.g., RoBERTa/BERT) for contextual, semantic understanding
+- **BiLSTM networks** for sequential, syntactic and temporal information
+
+These two components are integrated to form a **richer feature representation**, which improves performance across tasks like:
+
+- 🟢 Sentiment classification
+- 😄 Emotion detection
+- 🤨 Sarcasm identification
+- 🌍 Green tag prediction
+
+---
 
 ---
 
