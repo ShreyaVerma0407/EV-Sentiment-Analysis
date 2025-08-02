@@ -146,11 +146,11 @@ ev-sentiment-analysis/
 ### Model Comparison
 
 | Model         | YouTube Accuracy | Reddit Accuracy |
-|---------------|-----------------|----------------|
-| RoBERTa       | 92%             | 89%            |
-| BERT          | 88%             | 87%            |
-| BiLSTM        | 84%             | 82%            |
-| Hybrid Model  | **95%**         | **93%**        |
+|---------------|------------------|-----------------|
+| RoBERTa       | 95%              |                 |
+| BERT          | 95%              |                 |
+| BiLSTM        | 54%              |                 |
+| Hybrid Model  | **97%**          | **92%**         |
 
 **Hybrid Model (RoBERTa + Attention + BiLSTM) outperformed all other models.**
 
@@ -158,8 +158,8 @@ ev-sentiment-analysis/
 
 Confusion Matrix & Sentiment Distribution (see Output/ for plots):
 
-![Confusion Matrix](Output/confusion_matrix.png)
-![Sentiment Distribution](Output/sentiment_distribution.png)
+![Confusion Matrix](Visualisations/confusion_matrix.png)
+![Sentiment Distribution](Visualisations/sentiment score vs likes vs comment_length.png)
 
 ---
 
@@ -180,10 +180,12 @@ This project is licensed under the MIT License - see the LICENSE file for detail
 
 ## 🙏 Acknowledgements
 
-- **Hugging Face** - RoBERTa, BERT models
-- **scikit-learn** - ML tools and evaluation
-- **Pandas** - Data handling
-- **Reddit API (PRAW)** - Reddit scraping
+- **Hugging Face**: For providing powerful RoBERTa and BERT models.
+- **scikit-learn**: For their comprehensive machine learning tools and evaluation metrics.
+- **Pandas**: For efficient data handling and manipulation.
+- **Reddit API (PRAW)**: For enabling the scraping of comments from Reddit.
+- **YouTube API**: For enabling the extraction of comments and data from YouTube videos.
+
 
 ---
 
