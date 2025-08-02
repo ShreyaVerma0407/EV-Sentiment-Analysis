@@ -158,8 +158,8 @@ ev-sentiment-analysis/
 
 Confusion Matrix & Sentiment Distribution (see Output/ for plots):
 
-![Confusion Matrix](Visualisations/confusion_matrix.png)
-![Sentiment Distribution](Visualisations/sentiment score vs likes vs comment_length.png)
+![Confusion Matrix](Visualisations/yt_visuals/confusion_matrix.png)
+![Sentiment Distribution](Visualisations/yt_visuals/sentiment score vs likes vs comment_length.png)
 
 ---
 
