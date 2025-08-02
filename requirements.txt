@@ -1,0 +1,67 @@
+# ===========================
+# Python Dependencies for NLP Models
+# ===========================
+
+# -----------------------------------
+# Data Processing Libraries
+# -----------------------------------
+pandas         # For loading and processing datasets (e.g., CSV files)
+numpy          # For efficient numerical operations and array handling
+
+# -----------------------------------
+# Progress Monitoring
+# -----------------------------------
+tqdm           # Adds progress bars in loops (especially useful in training epochs)
+
+# -----------------------------------
+# Visualization Libraries
+# -----------------------------------
+seaborn        # Used for plotting confusion matrices and heatmaps
+matplotlib     # Used for creating plots like accuracy/loss curves
+
+# -----------------------------------
+# PyTorch Ecosystem
+# -----------------------------------
+torch          # Core library for building and training deep learning models
+torchvision    # Commonly installed with torch (used for vision tasks; safe to include)
+torchaudio     # Commonly installed with torch (used for audio tasks; safe to include)
+
+# -----------------------------------
+# Transformers & Pretrained Models
+# -----------------------------------
+transformers   # HuggingFace library to load BERT, RoBERTa, and other NLP models
+
+# -----------------------------------
+# Machine Learning Utilities
+# -----------------------------------
+scikit-learn   # For preprocessing, splitting data, computing metrics, etc.
+
+# -----------------------------------
+# Optional Performance Utility
+# -----------------------------------
+accelerate     # Helps train models faster on multiple devices (optional but useful)
+
+# ===========================
+# Total: 11 Dependencies
+# ===========================
+
+# ===========================
+# How to Use This File
+# ===========================
+# 1. Save this file as: requirements.txt
+# 2. Install all packages using:
+#    pip install -r requirements.txt
+
+# ===========================
+# Where These Libraries Are Used
+# ===========================
+# - bertmodel.py:      Uses torch, pandas, numpy, transformers, sklearn
+# - bilstm_model.py:   Uses torch, pandas, numpy, sklearn
+# - robertamodel.py:   Uses transformers, torch, pandas, sklearn
+# - hybridmodeltrain.py: Uses transformers, torch, pandas, tqdm, sklearn
+# - hybridmodeltest.py:  Uses torch, sklearn, seaborn, matplotlib
+
+
+# ===========================
+# End of File
+# ===========================
