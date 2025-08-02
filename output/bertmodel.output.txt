@@ -1,0 +1,39 @@
+Loading widget...
+Loading widget...
+Loading widget...
+Loading widget...
+🔁 Pre-tokenizing...
+Starting fast training...
+Epoch 1: Train Loss = 1011.1134, Accuracy = 0.8755
+Validation Accuracy = 0.9297
+Epoch 2: Train Loss = 424.2689, Accuracy = 0.9535
+Validation Accuracy = 0.9417
+Epoch 3: Train Loss = 225.3599, Accuracy = 0.9754
+Validation Accuracy = 0.9477
+Epoch 4: Train Loss = 111.2760, Accuracy = 0.9880
+Validation Accuracy = 0.9480
+Epoch 5: Train Loss = 50.7917, Accuracy = 0.9945
+Validation Accuracy = 0.9447
+Epoch 6: Train Loss = 34.8003, Accuracy = 0.9963
+Validation Accuracy = 0.9447
+Epoch 7: Train Loss = 34.1572, Accuracy = 0.9961
+Validation Accuracy = 0.9467
+Epoch 8: Train Loss = 46.6226, Accuracy = 0.9946
+Validation Accuracy = 0.9477
+Epoch 9: Train Loss = 90.4200, Accuracy = 0.9904
+Validation Accuracy = 0.9377
+Epoch 10: Train Loss = 108.6163, Accuracy = 0.9880
+Validation Accuracy = 0.9350
+Test Accuracy: 0.9500
+
+📊 Classification Report:
+
+              precision    recall  f1-score   support
+
+    Negative     0.9143    0.8759    0.8947       548
+     Neutral     0.9570    0.9709    0.9639      1237
+    Positive     0.9582    0.9621    0.9602      1215
+
+    accuracy                         0.9500      3000
+   macro avg     0.9432    0.9363    0.9396      3000
+weighted avg     0.9497    0.9500    0.9497      3000
