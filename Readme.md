@@ -10,23 +10,23 @@ This repository presents four deep learning models designed for multilabel text 
 
 ---
 
-
-
-
 ## 📁 Project Structure
 
-models
-├── bertmodel.py # BERT-based classification model
-├── Bilstm_model.py # BiLSTM-based classification model
-├── robertamodel.py # RoBERTa-based classification model
-├── hybrid_model.py # Hybrid (Transformer + BiLSTM) model
-└── data/datsets
-├── ev_ytcomments.csv # YouTube dataset
-└── reddit_dataset.csv # Reddit dataset (for evaluation)
+```
+models/
+├── bertmodel.py            # BERT-based classification model
+├── Bilstm_model.py         # BiLSTM-based classification model
+├── robertamodel.py         # RoBERTa-based classification model
+├── hybrid_model.py         # Hybrid (Transformer + BiLSTM) model
+
+data/
+├── ev_ytcomments.csv       # YouTube dataset
+├── reddit_dataset.csv      # Reddit dataset (for evaluation)
 ├── Resampling.py
 ├── ev_dataset_enrichment.py
 ├── reddit_comments_extraction.py
 ├── yt_comments_extraction.py
+```
 
 ---
 
@@ -59,101 +59,108 @@ Each model is designed to support **any one of the following label types** at a 
 - `sarcasm` (binary)
 - `green_tag` (binary)
 
-To switch tasks, modify the line:
+To switch tasks, modify:
 ```python
 y = df['sentiment']  # Replace with 'emotion', 'sarcasm', or 'green_tag'
-🧠 Model Descriptions
-1️⃣ BERT Model (bertmodel.py)
-Architecture: bert-base-uncased → Dropout → Linear
+```
 
-Tokenizer: Hugging Face BERT tokenizer
+---
 
-Input: Tokenized comments (max length: 128)
+## 🧠 Model Descriptions
 
-Strength: Good contextual representation for sentiment
+### 1️⃣ BERT Model (`bertmodel.py`)
+- **Architecture**: `bert-base-uncased` → Dropout → Linear
+- **Tokenizer**: Hugging Face BERT tokenizer
+- **Input**: Tokenized comments (max length: 128)
+- ✅ Good for: Sentiment
+- ⚠️ Limitation: Slight drop in sarcasm/emotion classification
 
-Limitations: Slight drop in sarcasm/emotion classification
+---
 
-Evaluation: Classification report + accuracy
+### 2️⃣ RoBERTa Model (`robertamodel.py`)
+- **Architecture**: `roberta-base` → Dropout → Linear
+- **Tokenizer**: Hugging Face RoBERTa tokenizer
+- **Input**: Tokenized comments (max length: 256)
+- ✅ Good for: General-purpose text tasks
+- ⚠️ Limitation: Needs more context for sarcasm
 
-2️⃣ RoBERTa Model (robertamodel.py)
-Architecture: roberta-base → Dropout → Linear
+---
 
-Tokenizer: Hugging Face RoBERTa tokenizer
+### 3️⃣ BiLSTM Model (`Bilstm_model.py`)
+- **Architecture**: Word embeddings → 2-layer BiLSTM → FC
+- **Tokenizer**: Space-tokenized vocab
+- **Input**: Padded word sequences (max length: 256)
+- ✅ Good for: Sequence modeling
+- ⚠️ Limitation: Weak contextual understanding
 
-Input: Tokenized comments (max length: 256)
+---
 
-Strength: Strong general-purpose transformer
+### 4️⃣ 🔀 Hybrid Model (`hybrid_model.py`)
+- **Architecture**:
+  - RoBERTa/BERT for context
+  - BiLSTM for sequential features
+  - Output fusion → FC → Softmax
+- ✅ Good for: Sarcasm, emotion, cross-domain performance
 
-Limitations: Needs more context for sarcasm
+---
 
-Evaluation: Detailed metrics via classification_report
+## 🚀 Running the Models
 
-3️⃣ BiLSTM Model (Bilstm_model.py)
-Architecture: Custom word-level embedding → 2-layer BiLSTM → FC
-
-Tokenizer: Basic space-tokenized vocab
-
-Input: Padded word sequences (max length: 256)
-
-Strength: Strong in capturing sequence dependencies
-
-Limitations: Weak contextual understanding
-
-Evaluation: Accuracy, precision, recall, F1
-
-4️⃣ 🔀 Hybrid Model (hybrid_model.py)
-Architecture:
-
-RoBERTa/BERT for global context
-
-BiLSTM for sequential nuance
-
-Output fusion → FC → Softmax
-
-Input: Transformer-encoded + tokenized
-
-Strength: Best results on sarcasm, emotion, cross-domain
-
-Evaluation: Tested on YouTube and Reddit
-🚀 Running the Models
-1. Install Dependencies
-bash
-Copy
-Edit
+### 1. Install Dependencies
+```bash
 pip install torch transformers pandas scikit-learn
-2. Prepare Data
-Place your CSV files in the data/ directory:
+```
 
-bash
-Copy
-Edit
+### 2. Prepare Data
+Place your CSV files in the `data/` directory:
+```bash
 data/ev_ytcomments.csv
 data/reddit_dataset.csv
-3. Run a Model
-bash
-Copy
-Edit
-python bertmodel.py       # Run BERT
-python robertamodel.py    # Run RoBERTa
-python Bilstm_model.py    # Run BiLSTM
-python hybrid_model.py    # Run Hybrid model
-✅ By default, the models train on sentiment. Change y = df['sentiment'] to another label if needed.
+```
 
- How and Why New Labels Were Added
-Originally, the dataset supported only sentiment. We expanded it for real-world applications:
+### 3. Run a Model
+```bash
+python bertmodel.py        # Run BERT
+python robertamodel.py     # Run RoBERTa
+python Bilstm_model.py     # Run BiLSTM
+python hybrid_model.py     # Run Hybrid model
+```
 
-🔹 Emotion Label
-Captures fine-grained mental states (e.g., joy vs. sadness)
+> ✅ By default, the models train on `sentiment`. Change `y = df['sentiment']` to another label to train for `emotion`, `sarcasm`, or `green_tag`.
 
-Useful for mental health monitoring and public opinion analysis
+---
 
-🔹 Sarcasm Label
-Sarcastic content often flips the sentiment meaning
+## 💡 Motivation for Label Expansion
 
-Improves model robustness in informal online platforms
+Originally, the dataset supported only **sentiment**. We added more labels for real-world application:
 
-🔹 Green Tag Label
-Filters for environment-related discussions
+### 🔹 Emotion Label
+- Captures fine-grained states (e.g., joy vs. sadness)
+- Useful for mental health monitoring & public sentiment analysis
 
-Useful for sustainability analysis or targeted filtering
+### 🔹 Sarcasm Label
+- Sarcastic content flips meaning — useful for improving model robustness
+
+### 🔹 Green Tag Label
+- Identifies environment-related content
+- Useful for sustainability and eco-focused filtering
+
+---
+
+## ✅ Summary
+
+This repository enables developers and researchers to:
+- Build and compare transformer and non-transformer-based models
+- Perform multilabel classification on social media text
+- Apply models across domains (YouTube vs Reddit)
+- Understand emotions, sarcasm, and green-tag relevance in online discussions
+
+---
+
+## 👩‍💻 Author
+
+- Khushi  and shreya
+
+---
+
+#
