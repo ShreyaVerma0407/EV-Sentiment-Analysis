@@ -14,7 +14,7 @@ from sklearn.metrics import classification_report
 nltk.download('vader_lexicon')
 
 # Load the dataset
-df = pd.read_csv('ev_comments_test.csv')
+df = pd.read_csv('filename.csv')
 
 # Initialize VADER Sentiment Analyzer
 sid = SentimentIntensityAnalyzer()

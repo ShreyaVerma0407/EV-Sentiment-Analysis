@@ -9,7 +9,7 @@ from sklearn.metrics import classification_report, confusion_matrix
 from torch.optim.lr_scheduler import CosineAnnealingLR
 
 # Load and process data
-df = pd.read_csv('new_ev_dataset_with_emotion.csv')
+df = pd.read_csv('Data/Datasets/ev_ytcomments.csv')
 
 # Check for missing values and handle them
 df['comment'] = df['comment'].fillna('')  # Replace NaN values with empty string

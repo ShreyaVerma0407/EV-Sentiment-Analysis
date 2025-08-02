@@ -7,7 +7,7 @@ import re
 nltk.download('vader_lexicon')
 
 # ✅ Load new dataset
-df = pd.read_csv("/kaggle/input/ytcomments/yt_comments_ev_30k.csv")
+df = pd.read_csv("filename.csv")
 
 # ✅ Clean 'comment' column
 df['comment'] = df['comment'].astype(str)
@@ -53,7 +53,7 @@ label_map = {"positive": 0, "neutral": 1, "negative": 2}
 df['label'] = df['sentiment'].map(label_map)
 
 # ✅ Save enriched dataset (optional)
-df.to_csv("new_ev_dataset_enriched.csv", index=False)
+df.to_csv("filename.csv", index=False)
 
 # ✅ Preview
 df.head()
