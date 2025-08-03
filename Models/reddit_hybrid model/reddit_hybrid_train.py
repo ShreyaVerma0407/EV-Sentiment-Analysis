@@ -7,6 +7,7 @@ from sklearn.metrics import accuracy_score
 from tqdm import tqdm
 import pandas as pd
 import numpy as np
+import os
 
 
 class Attention(nn.Module):
@@ -121,7 +122,15 @@ def eval_model(model, dataloader, loss_fn, device):
 from sklearn.model_selection import train_test_split
 
 # Load and preprocess your data
-df = pd.read_csv("Data/Datasets/ev_redditcomments")
+# Get the folder where the script is located
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+
+# Make full path to the CSV file
+csv_path = os.path.join(BASE_DIR, 'Data', 'Datasets', 'ev_redditcomments')
+
+# Read the CSV file using dynamic path
+df = pd.read_csv(csv_path)
+
 label_map = {"positive": 0, "neutral": 1, "negative": 2}
 df['label'] = df['sentiment'].map(label_map)
 
