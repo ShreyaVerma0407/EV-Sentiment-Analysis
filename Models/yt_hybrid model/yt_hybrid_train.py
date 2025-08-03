@@ -12,7 +12,7 @@ import os
 from sklearn.preprocessing import StandardScaler
 
 # Load dataset
-df = pd.read_csv("new_ev_dataset_with_emotion.csv")
+df = pd.read_csv("Data/Datasets/ev_ytcomments")
 df['comment'] = df['comment'].astype(str)
 df['label'] = df['sentiment'].map({'positive': 0, 'neutral': 1, 'negative': 2})
 
