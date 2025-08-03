@@ -113,17 +113,17 @@ pip install torch transformers pandas scikit-learn
 
 ### 2. Prepare Data
 Place your CSV files in the `data/` directory:
-```bash
-data/ev_ytcomments.csv
+
+data/ev_ytcomments.csv & 
 data/reddit_dataset.csv
-```
+
 
 ### 3. Run a Model
 ```bash
 python bertmodel.py        # Run BERT
 python robertamodel.py     # Run RoBERTa
 python Bilstm_model.py     # Run BiLSTM
-python hybrid_model.py     # Run Hybrid model
+python hybrid_model.py     # Run Hybrid model for Youtube comments 
 ```
 
 > ✅ By default, the models train on `sentiment`. Change `y = df['sentiment']` to another label to train for `emotion`, `sarcasm`, or `green_tag`.
@@ -146,7 +146,20 @@ Originally, the dataset supported only **sentiment**. We added more labels for r
 - Useful for sustainability and eco-focused filtering
 
 ---
+## Results
 
+| Model         | YouTube Accuracy | 
+|---------------|------------------|
+| RoBERTa       | 95%              |                 
+| BERT          | 95%              |                 
+| BiLSTM        | 54%              |                 
+| Hybrid Model  | *97%*            |
+
+**Hybrid Model (RoBERTa + Attention + BiLSTM) outperformed all other models.**
+
+
+
+---
 ## ✅ Summary
 
 This repository enables developers and researchers to:
