@@ -121,18 +121,15 @@ def eval_model(model, dataloader, loss_fn, device):
     return total_loss / len(dataloader), acc
 from sklearn.model_selection import train_test_split
 
-# Correct base path (go up only one level)
+# Go up from: models/reddit_hybrid model → EV-Sentiment-Analysis
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 
-# Correct full path to CSV
-csv_path = os.path.abspath(os.path.join(BASE_DIR, '..', 'Data', 'Datasets', 'ev_redditcomments.csv'))
+csv_path = os.path.abspath(os.path.join(BASE_DIR, '..', '..', '..', 'Data', 'Datasets', 'ev_redditcomments.csv'))
 
-# File check and debug log
 print("🔍 Looking for file at:", csv_path)
 if not os.path.exists(csv_path):
     raise FileNotFoundError(f"❌ File not found at: {csv_path}")
 
-# Load CSV
 df = pd.read_csv(csv_path)
 print("✅ CSV successfully read.")
 
