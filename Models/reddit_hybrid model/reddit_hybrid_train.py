@@ -121,15 +121,20 @@ def eval_model(model, dataloader, loss_fn, device):
     return total_loss / len(dataloader), acc
 from sklearn.model_selection import train_test_split
 
-# Load and preprocess your data
-# Get the folder where the script is located
+# ✅ Construct the base path (same as yours)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
-# Make full path to the CSV file
-csv_path = os.path.join(BASE_DIR, 'Data', 'Datasets', 'ev_redditcomments')
+# ✅ Correct path with .csv extension
+csv_path = os.path.join(BASE_DIR, 'Data', 'Datasets', 'ev_redditcomments.csv')
 
-# Read the CSV file using dynamic path
+# ✅ Debug message and safety check
+print("🔍 Looking for file at:", csv_path)
+if not os.path.exists(csv_path):
+    raise FileNotFoundError(f"❌ File not found at: {csv_path}")
+
+# ✅ Load CSV safely
 df = pd.read_csv(csv_path)
+print("✅ CSV successfully read.")
 
 label_map = {"positive": 0, "neutral": 1, "negative": 2}
 df['label'] = df['sentiment'].map(label_map)
