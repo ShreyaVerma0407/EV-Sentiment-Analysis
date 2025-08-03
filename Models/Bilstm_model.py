@@ -7,9 +7,17 @@ from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import LabelEncoder
 from sklearn.metrics import classification_report, confusion_matrix
 from torch.optim.lr_scheduler import CosineAnnealingLR
+import os
 
-# Load and process data
-df = pd.read_csv('Data/Datasets/ev_ytcomments.csv')
+# Get the folder where the script is located
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+
+# Make full path to the CSV file
+csv_path = os.path.join(BASE_DIR, 'Data', 'Datasets', 'ev_ytcomments.csv')
+
+# Read the CSV file using dynamic path
+df = pd.read_csv(csv_path)
+
 
 # Check for missing values and handle them
 df['comment'] = df['comment'].fillna('')  # Replace NaN values with empty string
