@@ -11,10 +11,14 @@ from tqdm import tqdm
 import os
 from sklearn.preprocessing import StandardScaler
 
-BASE_DIR = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-csv_path = os.path.join(BASE_DIR, 'Data', 'Datasets', 'ev_ytcomments.csv')
-df = pd.read_csv(csv_path)
+# Get the folder where the script is located
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
+# Make full path to the CSV file
+csv_path = os.path.join(BASE_DIR, 'Data', 'Datasets', 'ev_ytcomments.csv')
+
+# Read the CSV file using dynamic path
+df = pd.read_csv(csv_path)
 
 df['comment'] = df['comment'].astype(str)
 df['label'] = df['sentiment'].map({'positive': 0, 'neutral': 1, 'negative': 2})
@@ -29,7 +33,7 @@ train_df, test_df = train_test_split(df, test_size=0.2, stratify=df['label'], ra
 tokenizer = RobertaTokenizer.from_pretrained("roberta-base")
 
 class EVCommentDataset(Dataset):
-    def _init_(self, df, tokenizer, max_len=128):
+    def __init__(self, df, tokenizer, max_len=128):
         self.texts = df['comment'].tolist()
         self.scores = df['sentiment_score'].values
         self.sarcasm = df['sarcasm'].values
@@ -38,7 +42,7 @@ class EVCommentDataset(Dataset):
         self.tokenizer = tokenizer
         self.max_len = max_len
 
-    def _getitem_(self, idx):
+    def __getitem__(self, idx):
         inputs = self.tokenizer(self.texts[idx], truncation=True, padding='max_length',
                                 max_length=self.max_len, return_tensors="pt")
         features = torch.tensor([self.scores[idx], self.sarcasm[idx], self.green[idx]], dtype=torch.float)
@@ -49,16 +53,15 @@ class EVCommentDataset(Dataset):
             'label': torch.tensor(self.labels[idx], dtype=torch.long)
         }
 
-    def _len_(self):
+    def __len__(self):
         return len(self.texts)
 
 train_loader = DataLoader(EVCommentDataset(train_df, tokenizer), batch_size=16, shuffle=True)
 test_loader = DataLoader(EVCommentDataset(test_df, tokenizer), batch_size=16)
 
-# Attention and Model class
 class Attention(nn.Module):
-    def _init_(self, hidden_dim):
-        super()._init_()
+    def __init__(self, hidden_dim):
+        super().__init__()
         self.attn = nn.Linear(hidden_dim * 2, 1)
 
     def forward(self, x):
@@ -66,8 +69,8 @@ class Attention(nn.Module):
         return torch.sum(weights * x, dim=1)
 
 class RobertaHybrid(nn.Module):
-    def _init_(self, hidden_dim=128, num_labels=3):
-        super()._init_()
+    def __init__(self, hidden_dim=128, num_labels=3):
+        super().__init__()
         self.roberta = RobertaModel.from_pretrained("roberta-base")
         self.lstm = nn.LSTM(768, hidden_dim, batch_first=True, bidirectional=True)
         self.attn = Attention(hidden_dim)
@@ -88,10 +91,9 @@ class RobertaHybrid(nn.Module):
         x = torch.cat((attn_out, structured_features), dim=1)
         return self.classifier(x)
 
-# Focal Loss
 class FocalLoss(nn.Module):
-    def _init_(self, alpha=None, gamma=2.0):
-        super()._init_()
+    def __init__(self, alpha=None, gamma=2.0):
+        super().__init__()
         self.alpha = alpha
         self.gamma = gamma
 
@@ -100,7 +102,6 @@ class FocalLoss(nn.Module):
         pt = torch.exp(-CE)
         return ((1 - pt) ** self.gamma * CE).mean()
 
-# Setup
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 model = RobertaHybrid().to(device)
 
@@ -111,12 +112,10 @@ for layer in model.roberta.encoder.layer[:3]:
     for param in layer.parameters():
         param.requires_grad = False
 
-# Class weights and loss
 class_weights = compute_class_weight('balanced', classes=np.unique(df['label']), y=df['label'])
 class_weights = torch.tensor(class_weights, dtype=torch.float).to(device)
 loss_fn = FocalLoss(alpha=class_weights)
 
-# Optimizer and scheduler
 optimizer = torch.optim.AdamW(model.parameters(), lr=2e-5)
 epochs = 25
 total_steps = len(train_loader) * epochs
@@ -126,7 +125,6 @@ scheduler = get_cosine_schedule_with_warmup(
     num_training_steps=total_steps
 )
 
-# Train + Eval
 def train_epoch(model, loader):
     model.train()
     total_loss, all_preds, all_labels = 0, [], []
@@ -170,7 +168,6 @@ def eval_model(model, loader):
     acc = accuracy_score(all_labels, all_preds)
     return total_loss / len(loader), acc
 
-# Resume training if needed
 best_acc = 0
 patience = 5
 counter = 0
@@ -184,7 +181,6 @@ if os.path.exists(checkpoint_path):
 else:
     print("🟡 No saved checkpoint found — training from scratch")
 
-# Training loop
 for epoch in range(epochs):
     print(f"\nEpoch {epoch+1}")
     train_loss, train_acc = train_epoch(model, train_loader)
