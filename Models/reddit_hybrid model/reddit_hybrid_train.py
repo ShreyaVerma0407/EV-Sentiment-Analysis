@@ -121,7 +121,7 @@ def eval_model(model, dataloader, loss_fn, device):
 from sklearn.model_selection import train_test_split
 
 # Load and preprocess your data
-df = pd.read_csv("/kaggle/working/ev_with_sentiment_emotion_green_sarcasm.csv")
+df = pd.read_csv("Data/Datasets/ev_redditcomments")
 label_map = {"positive": 0, "neutral": 1, "negative": 2}
 df['label'] = df['sentiment'].map(label_map)
 
