@@ -12,8 +12,14 @@ import os
 from sklearn.preprocessing import StandardScaler
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
-csv_path = os.path.join(BASE_DIR, '..', '..', 'Data', 'Datasets', 'ev_ytcomments.csv')
-csv_path = os.path.abspath(csv_path)  # Normalize path
+csv_path = os.path.abspath(os.path.join(BASE_DIR, '..', '..', 'Data', 'Datasets', 'ev_ytcomments.csv'))
+
+print("🔍 Looking for file at:", csv_path)
+if not os.path.exists(csv_path):
+    raise FileNotFoundError(f"❌ File not found at: {csv_path}")
+
+df = pd.read_csv(csv_path)
+print("✅ CSV successfully read.")
 
 
 df['comment'] = df['comment'].astype(str)
