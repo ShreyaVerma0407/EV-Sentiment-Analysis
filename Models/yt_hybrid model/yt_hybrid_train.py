@@ -11,14 +11,10 @@ from tqdm import tqdm
 import os
 from sklearn.preprocessing import StandardScaler
 
-# Get the folder where the script is located
-BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+csv_path = os.path.join(BASE_DIR, '..', '..', 'Data', 'Datasets', 'ev_ytcomments.csv')
+csv_path = os.path.abspath(csv_path)  # Normalize path
 
-# Make full path to the CSV file
-csv_path = os.path.join(BASE_DIR, 'Data', 'Datasets', 'ev_ytcomments.csv')
-
-# Read the CSV file using dynamic path
-df = pd.read_csv(csv_path)
 
 df['comment'] = df['comment'].astype(str)
 df['label'] = df['sentiment'].map({'positive': 0, 'neutral': 1, 'negative': 2})
